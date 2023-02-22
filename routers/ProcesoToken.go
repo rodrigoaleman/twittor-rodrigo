@@ -27,17 +27,17 @@ func ProcesoToken(tk string) (*models.Claim, bool, string, error) {
 	})
 
 	if err != nil {
-		_, encontrado, _ := bd.ChequeoYaExisteUsuario(claims.Email)
-		if encontrado == true {
-			Email = claims.Email
-			IDUsuario = claims.ID.Hex()
-		}
-		return claims, encontrado, IDUsuario, nil
+		return claims, false, string(""), err
 	}
 
 	if !tkn.Valid {
 		return claims, false, string(""), errors.New("token invalido")
 	}
 
-	return claims, false, string(""), err
+	_, encontrado, _ := bd.ChequeoYaExisteUsuario(claims.Email)
+	if encontrado == true {
+		Email = claims.Email
+		IDUsuario = claims.ID.Hex()
+	}
+	return claims, encontrado, IDUsuario, nil
 }
